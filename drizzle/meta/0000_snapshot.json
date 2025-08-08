@@ -1,5 +1,5 @@
 {
-  "id": "9fb34bc6-bfc4-48cf-ad7e-c32dbef6405c",
+  "id": "21f3c296-d830-43fb-833f-cee9c681f5f3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -80,6 +80,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "googleId": {
+          "name": "googleId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -91,6 +97,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "email"
+          ]
+        },
+        "tmp_user_googleId_unique": {
+          "name": "tmp_user_googleId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "googleId"
           ]
         }
       },
