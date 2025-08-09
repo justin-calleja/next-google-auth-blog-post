@@ -2,6 +2,7 @@ import { createSession, generateSessionToken, validateRequest } from "@/auth";
 import { UserId } from "@/use-cases/types";
 import { cache } from "react";
 import { setSessionTokenCookie } from "./session-storage";
+import { AUTHENTICATION_ERROR_MESSAGE } from "./errors";
 
 export const getCurrentUser = cache(async () => {
   const { user } = await validateRequest();
@@ -11,7 +12,7 @@ export const getCurrentUser = cache(async () => {
 export const assertAuthenticated = async () => {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("You must be logged in to view this content");
+    throw new Error(AUTHENTICATION_ERROR_MESSAGE);
   }
   return user;
 };

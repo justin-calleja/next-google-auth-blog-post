@@ -3,6 +3,7 @@ import { googleAuth } from "@/auth";
 import { authPaths } from "@/lib/paths";
 import { setSession } from "@/lib/session";
 import { findUserByEmail } from "@/data-access/users";
+import { UNAUTHORIZED_USER_ERROR_MESSAGE, SOMETHING_WENT_WRONG_ERROR_MESSAGE } from "@/lib/errors";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -43,12 +44,7 @@ export async function GET(request: Request) {
     const user = await findUserByEmail(googleUser.email);
 
     if (!user) {
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: authPaths.unauthorizedUser,
-        },
-      });
+      throw new Error(UNAUTHORIZED_USER_ERROR_MESSAGE);
     }
 
     await setSession(user.id);
@@ -61,13 +57,7 @@ export async function GET(request: Request) {
     });
   } catch (e) {
     console.error(e);
-
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: authPaths.unauthorizedUser,
-      },
-    });
+    throw new Error(SOMETHING_WENT_WRONG_ERROR_MESSAGE);
   }
 }
 
