@@ -3,7 +3,6 @@ import { index, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 export const users = pgTable("tmp_user", {
   id: serial("id").primaryKey(),
   email: text("email").unique(),
-  googleId: text("googleId").unique(),
 });
 
 export const sessions = pgTable(
