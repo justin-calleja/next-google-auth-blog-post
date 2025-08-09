@@ -21,3 +21,5 @@ export const sessions = pgTable(
 );
 
 export type User = typeof users.$inferSelect;
+
+export type Session = typeof sessions.$inferSelect;

@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
-import { googleAuth } from "@/lib/auth";
+import { googleAuth } from "@/auth";
 import { authPaths } from "@/lib/paths";
 import { findByEmail } from "@/services/user";
+import { setSession } from "@/lib/session";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -49,28 +50,15 @@ export async function GET(request: Request) {
         },
       });
     }
-    console.log("🚀 ~ GET ~ user:", user);
-    // const existingAccount = await getAccountByGoogleIdUseCase(googleUser.sub);
 
-    await setSession(existingAccount.userId);
+    await setSession(user.id);
 
     return new Response(null, {
       status: 302,
       headers: {
-        Location: afterLoginUrl,
+        Location: authPaths.signinSuccessRedirect,
       },
     });
-
-    // const userId = await createGoogleUserUseCase(googleUser);
-
-    // await setSession(userId);
-
-    // return new Response(null, {
-    //   status: 302,
-    //   headers: {
-    //     Location: afterLoginUrl,
-    //   },
-    // });
   } catch (e) {
     console.error(e);
 
@@ -91,5 +79,4 @@ export interface GoogleUser {
   picture: string;
   email: string;
   email_verified: boolean;
-  locale: string;
 }
