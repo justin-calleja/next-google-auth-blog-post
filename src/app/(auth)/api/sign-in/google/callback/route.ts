@@ -1,9 +1,7 @@
 import { cookies } from "next/headers";
 import { googleAuth } from "@/lib/auth";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { users } from "@/db/schema";
 import { authPaths } from "@/lib/paths";
+import { findByEmail } from "@/services/user";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -41,9 +39,7 @@ export async function GET(request: Request) {
 
     const googleUser: GoogleUser = await response.json();
 
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, googleUser.email),
-    });
+    const user = await findByEmail(googleUser.email);
 
     if (!user) {
       return new Response(null, {
@@ -56,15 +52,14 @@ export async function GET(request: Request) {
     console.log("🚀 ~ GET ~ user:", user);
     // const existingAccount = await getAccountByGoogleIdUseCase(googleUser.sub);
 
-    // if (existingAccount) {
-    //   await setSession(existingAccount.userId);
-    //   return new Response(null, {
-    //     status: 302,
-    //     headers: {
-    //       Location: afterLoginUrl,
-    //     },
-    //   });
-    // }
+    await setSession(existingAccount.userId);
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: afterLoginUrl,
+      },
+    });
 
     // const userId = await createGoogleUserUseCase(googleUser);
 

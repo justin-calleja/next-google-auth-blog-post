@@ -3,4 +3,5 @@ export const authPaths = {
   oauthStep2: "/api/sign-in/google/callback",
   unauthorizedUser: "/unauthorized",
   somethingWentWrong: "/something-went-wrong",
+  signinSuccessRedirect: "/dashboard",
 };
