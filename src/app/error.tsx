@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { 
-  AUTHENTICATION_ERROR_MESSAGE, 
+  AUTHENTICATION_ERROR_MESSAGE,
   UNAUTHORIZED_USER_ERROR_MESSAGE,
   SOMETHING_WENT_WRONG_ERROR_MESSAGE 
 } from "@/lib/errors";
@@ -81,11 +81,11 @@ export default function ErrorPage({
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/sign-in">
+              <a href="/sign-in">
                 <Button variant="outline" className="w-full sm:w-auto">
                   Try Different Account
                 </Button>
-              </Link>
+              </a>
               <Link href="/">
                 <Button className="w-full sm:w-auto">
                   Back to Home
@@ -119,11 +119,11 @@ export default function ErrorPage({
 
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/sign-in">
+              <a href="/sign-in">
                 <Button variant="outline" className="w-full sm:w-auto">
                   Try Different Account
                 </Button>
-              </Link>
+              </a>
               <Link href="/">
                 <Button className="w-full sm:w-auto">Back to Home</Button>
               </Link>
