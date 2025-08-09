@@ -3,5 +3,6 @@ import React from "react";
 
 export default async function Dashboard() {
   const user = await assertAuthenticated();
-  return <>Todo... {user.given_name}</>;
+
+  return <div>Hello {user.given_name}</div>;
 }
