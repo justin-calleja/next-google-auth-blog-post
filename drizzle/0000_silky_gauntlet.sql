@@ -7,6 +7,10 @@ CREATE TABLE "tmp_session" (
 CREATE TABLE "tmp_user" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"email" text,
+	"name" text,
+	"given_name" text,
+	"family_name" text,
+	"picture" text,
 	CONSTRAINT "tmp_user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
