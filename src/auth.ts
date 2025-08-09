@@ -5,7 +5,7 @@ import {
   encodeHexLowerCase,
 } from "@oslojs/encoding";
 import type { UserId } from "./use-cases/types";
-import { sessions, type Session } from "./db/schema";
+import { sessions, User, type Session } from "./db/schema";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { db } from "./db";
 
@@ -37,4 +37,8 @@ export async function createSession(
   };
   await db.insert(sessions).values(session);
   return session;
+}
+
+export const validateRequest = () => {
+    
 }

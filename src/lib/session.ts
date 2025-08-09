@@ -1,21 +1,21 @@
-import { createSession, generateSessionToken } from "@/auth";
+import { createSession, generateSessionToken, validateRequest } from "@/auth";
 import { UserId } from "@/use-cases/types";
-import { cookies } from "next/headers";
+import { cache } from "react";
+import { getSessionToken, setSessionTokenCookie } from "./session-storage";
 
-const SESSION_COOKIE_NAME = "appsession";
+export const getCurrentUser = cache(async () => {
+  const sessionToken = await getSessionToken();
+  const { user } = await validateRequest(sessionToken);
+  return user ?? undefined;
+});
 
-export const setSessionTokenCookie = async (
-  token: string,
-  expiresAt: Date
-): Promise<void> => {
-  const allCookies = await cookies();
-  allCookies.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    expires: expiresAt,
-    path: "/",
-  });
+export const assertAuthenticated = async () => {
+  const user = await getCurrentUser();
+  if (!user) {
+    // throw new AuthenticationError();
+    throw new Error("You must be logged in to view this content");
+  }
+  return user;
 };
 
 export const setSession = async (userId: UserId) => {
