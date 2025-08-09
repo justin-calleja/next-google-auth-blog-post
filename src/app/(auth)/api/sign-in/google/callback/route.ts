@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { googleAuth } from "@/auth";
 import { authPaths } from "@/lib/paths";
-import { findByEmail } from "@/services/user";
 import { setSession } from "@/lib/session";
+import { findUserByEmail } from "@/data-access/users";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -40,7 +40,7 @@ export async function GET(request: Request) {
 
     const googleUser: GoogleUser = await response.json();
 
-    const user = await findByEmail(googleUser.email);
+    const user = await findUserByEmail(googleUser.email);
 
     if (!user) {
       return new Response(null, {

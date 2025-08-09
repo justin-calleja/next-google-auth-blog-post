@@ -1,11 +1,10 @@
 import { createSession, generateSessionToken, validateRequest } from "@/auth";
 import { UserId } from "@/use-cases/types";
 import { cache } from "react";
-import { getSessionToken, setSessionTokenCookie } from "./session-storage";
+import { setSessionTokenCookie } from "./session-storage";
 
 export const getCurrentUser = cache(async () => {
-  const sessionToken = await getSessionToken();
-  const { user } = await validateRequest(sessionToken);
+  const { user } = await validateRequest();
   return user ?? undefined;
 });
 
