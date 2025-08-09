@@ -4,17 +4,22 @@ import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
-import type { UserId } from "./use-cases/types";
-import { sessions, User, type Session } from "./db/schema";
+import { User, type Session } from "./db/schema";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { getSessionToken } from "./lib/session-storage";
 import {
   deleteSessionById,
   findSessionById,
   insertSession,
+  updateSessionExpiryDateById,
 } from "./data-access/sessions";
+import { findUserById } from "./data-access/users";
+import { isExpired } from "./lib/utils";
 
+// 15 days
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
+
+// 30 days
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;
 
 export const googleAuth = new Google(
@@ -32,7 +37,7 @@ export function generateSessionToken(): string {
 
 export async function createSession(
   token: string,
-  userId: UserId
+  userId: Session["userId"]
 ): Promise<Session> {
   const sessionId = hashToken(token);
   const session: Session = {
@@ -61,17 +66,15 @@ export async function validateSessionToken(
     return { session: null, user: null };
   }
 
-  if (Date.now() >= sessionInDb.expiresAt.getTime()) {
+  if (isExpired(sessionInDb.expiresAt)) {
     await deleteSessionById(sessionInDb.id);
     return { session: null, user: null };
   }
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, sessionInDb.userId),
-  });
+  const user = await findUserById(sessionInDb.userId);
 
   if (!user) {
-    await db.delete(sessions).where(eq(sessions.id, sessionInDb.id));
+    await deleteSessionById(sessionInDb.id);
     return { session: null, user: null };
   }
 
@@ -80,12 +83,7 @@ export async function validateSessionToken(
     sessionInDb.expiresAt.getTime() - SESSION_REFRESH_INTERVAL_MS
   ) {
     sessionInDb.expiresAt = new Date(Date.now() + SESSION_MAX_DURATION_MS);
-    await db
-      .update(sessions)
-      .set({
-        expiresAt: sessionInDb.expiresAt,
-      })
-      .where(eq(sessions.id, sessionInDb.id));
+    await updateSessionExpiryDateById(sessionInDb.id, sessionInDb.expiresAt);
   }
   return { session: sessionInDb, user };
 }

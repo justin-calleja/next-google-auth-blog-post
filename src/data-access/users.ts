@@ -2,9 +2,20 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users, type User } from "@/db/schema";
 
-export const findUserByEmail = async (email: string): Promise<User | undefined> => {
+export const findUserByEmail = async (
+  email: string
+): Promise<User | undefined> => {
   const user = await db.query.users.findFirst({
     where: eq(users.email, email),
+  });
+  return user;
+};
+
+export const findUserById = async (
+  id: User["id"]
+): Promise<User | undefined> => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, id),
   });
   return user;
 };

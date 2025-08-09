@@ -16,3 +16,13 @@ export const findSessionById = async (sessionId: Session["id"]) => {
 export const deleteSessionById = async (sessionId: Session["id"]) => {
   await db.delete(sessions).where(eq(sessions.id, sessionId));
 };
+
+export const updateSessionExpiryDateById = async (
+  sessionId: Session["id"],
+  expiresAt: Session["expiresAt"]
+) => {
+  await db
+    .update(sessions)
+    .set({ expiresAt })
+    .where(eq(sessions.id, sessionId));
+};

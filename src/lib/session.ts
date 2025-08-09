@@ -11,7 +11,6 @@ export const getCurrentUser = cache(async () => {
 export const assertAuthenticated = async () => {
   const user = await getCurrentUser();
   if (!user) {
-    // throw new AuthenticationError();
     throw new Error("You must be logged in to view this content");
   }
   return user;
