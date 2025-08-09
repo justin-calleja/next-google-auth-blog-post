@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { googleAuth } from "@/auth";
 import { authPaths } from "@/lib/paths";
 import { setSession } from "@/lib/session";
-import { findUserByEmail } from "@/data-access/users";
+import { findUserByEmail, updateUserById } from "@/data-access/users";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -48,6 +48,15 @@ export async function GET(request: Request) {
         headers: {
           Location: `${authPaths.signin}?error=unauthorized`,
         },
+      });
+    }
+
+    if (!user.family_name || !user.given_name || !user.name || !user.picture) {
+      await updateUserById(user.id, {
+        family_name: googleUser.family_name,
+        given_name: googleUser.given_name,
+        name: googleUser.name,
+        picture: googleUser.picture,
       });
     }
 

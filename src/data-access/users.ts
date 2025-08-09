@@ -19,3 +19,7 @@ export const findUserById = async (
   });
   return user;
 };
+
+export const updateUserById = async (id: User["id"], user: Partial<User>) => {
+  await db.update(users).set(user).where(eq(users.id, id));
+};
