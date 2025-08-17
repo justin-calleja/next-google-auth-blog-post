@@ -1,1 +1,1 @@
-CREATE DATABASE "next-google-auth-db";
+CREATE DATABASE "auth-js-db";
